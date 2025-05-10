@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ ui_text.title }}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url("{{ url_for('static', filename='lol.jpeg') }}") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    h1 {
+      color: #0abd19;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-top: 20px;
+    }
+
+    form {
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 15px;
+      display: block;
+    }
+
+    select, input[type="file"], input[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    input[type="submit"] {
+      background-color: #105da9;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #0b437a;
+    }
+
+    img.logo {
+      max-width: 120px;
+      display: block;
+      margin: 0 auto 20px;
+      border-radius: 10px;
+    }
+
+    img.prediction {
+      margin-top: 15px;
+      max-width: 100%;
+      border-radius: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    ul {
+      margin-top: 10px;
+      padding-left: 20px;
+      text-align: left;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Logo added here -->
+    <img src="{{ url_for('static', filename='logo.jpg') }}" alt="LeafLens Logo" class="logo">
+
+    <h1>{{ ui_text.title }}</h1>
+
+    <!-- Language selection form -->
+    <form id="langForm" action="/" method="GET">
+      <label for="language">{{ ui_text.select_language }}</label>
+      <select name="language" id="language" onchange="document.getElementById('langForm').submit();">
+        <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
+        <option value="hi" {% if lang == 'hi' %}selected{% endif %}>हिन्दी</option>
+        <option value="pa" {% if lang == 'pa' %}selected{% endif %}>ਪੰਜਾਬੀ</option>
+        <option value="ta" {% if lang == 'ta' %}selected{% endif %}>தமிழ்</option>
+        <option value="hr" {% if lang == 'hr' %}selected{% endif %}>हरियाणवी</option>
+      </select>
+    </form>
+
+    <!-- Image upload form -->
+    <form action="/" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="language" value="{{ lang }}">
+      <label for="image">{{ ui_text.upload_leaf }}</label>
+      <input type="file" name="image" id="image" required>
+      <input type="submit" value="{{ ui_text.predict }}">
+    </form>
+
+    {% if prediction %}
+      <h2>{{ ui_text.predicted_disease }}: {{ prediction }}</h2>
+      <img src="{{ image_path }}" alt="Leaf Image" class="prediction">
+
+      {% if remedy %}
+        <h2>{{ ui_text.remedies }}:</h2>
+        <ul>
+          {% for step in remedy %}
+            <li>{{ step }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p><strong>{{ ui_text.remedies }}:</strong> No remedies available for this disease.</p>
+      {% endif %}
+    {% endif %}
+  </div>
+</body>
+</html>
